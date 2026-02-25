@@ -1,0 +1,66 @@
+# =============================================================================
+# Price Level Detection Configuration
+# =============================================================================
+
+price_levels:
+  # Detection methods - enable/disable and tune each independently
+  methods:
+    pivot_points:
+      enabled: true
+      lookback_periods: 20           # Bars to look back for swing highs/lows
+      min_touches: 2                 # Minimum price touches to confirm level
+      sensitivity: 3                 # Number of bars left/right for pivot detection
+
+    volume_profile:
+      enabled: true
+      lookback_bars: 500             # Bars for volume profile calculation
+      value_area_pct: 0.70           # Value area percentage (0.68-0.70 standard)
+      num_bins: 100                  # Resolution of volume histogram
+      hvn_threshold: 1.5             # High volume node: bins > threshold * mean
+
+    clustering:
+      enabled: true
+      bandwidth: 0.5                 # KDE bandwidth (lower = more precise, higher = smoother)
+      min_cluster_size: 5            # Minimum data points in a cluster
+      merge_distance_atr: 0.3       # Merge clusters within this ATR distance
+
+    round_numbers:
+      enabled: true
+      intervals:                     # Price intervals to check for round numbers
+        forex_major: 0.0100          # Every 100 pips for forex majors
+        forex_minor: 0.0050          # Every 50 pips
+        index: 100                   # Every 100 points for indices
+        gold: 10                     # Every $10 for XAUUSD
+        crypto: 1000                 # Every $1000 for BTC
+
+  # Zone settings (levels are zones, not exact lines)
+  zones:
+    width_atr_multiplier: 0.5        # Zone width = ATR * this value
+    max_active_levels: 10            # Maximum active levels per symbol
+    level_expiry_hours: 168          # Levels expire after this many hours (168 = 1 week)
+
+  # Scoring - how levels are ranked by importance
+  scoring:
+    touch_weight: 2.0               # Weight per additional touch
+    recency_weight: 1.5             # Weight for more recent levels
+    timeframe_weight: 3.0           # Weight for higher timeframe levels
+    volume_weight: 2.0              # Weight for volume-confirmed levels
+    confluence_bonus: 5.0           # Bonus when multiple methods agree
+
+  # Multi-timeframe confluence
+  confluence:
+    enabled: true
+    timeframes:
+      - "D1"
+      - "H4"
+      - "H1"
+    min_timeframes: 2               # Level must appear on at least N timeframes
+
+  # Invalidation rules
+  invalidation:
+    max_clean_breaks: 2             # Invalidate after this many clean breaks through level
+    break_threshold_atr: 0.5        # Close beyond level by this ATR = "clean break"
+    polarity_flip: true             # Broken support becomes resistance (and vice versa)
+
+  # Per-symbol overrides (any key from above can be overridden per symbol)
+  symbol_overrides: {}

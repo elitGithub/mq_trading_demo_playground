@@ -1,0 +1,61 @@
+poll_interval_ms: 500
+tick_batch_size: 500
+strategies:
+  default:
+    name: PriceLevel Reactor
+    enabled: true
+    timeframes:
+      analysis:
+      - H4
+      - H1
+      - M15
+      entry: M5
+    entry:
+      proximity_atr_multiplier: 1.82
+      confirmation_candles: 2
+      min_rejection_pips: 10
+      require_volume_spike: false
+      volume_spike_multiplier: 1.5
+    exit:
+      take_profit_atr_multiplier: 2
+      stop_loss_atr_multiplier: 1
+      trailing_stop:
+        enabled: true
+        activation_atr: 1.5
+        trail_atr: 0.75
+      break_even:
+        enabled: true
+        trigger_atr: 1
+        offset_pips: 2
+    atr:
+      period: 14
+      timeframe: H1
+  test:
+    name: test
+    enabled: true
+    timeframes:
+      analysis:
+      - H4
+      - H1
+      - M15
+      entry: M5
+    entry:
+      proximity_atr_multiplier: 1.5
+      confirmation_candles: 2
+      min_rejection_pips: 10
+      require_volume_spike: false
+      volume_spike_multiplier: 1.5
+    exit:
+      take_profit_atr_multiplier: 2
+      stop_loss_atr_multiplier: 1
+      trailing_stop:
+        enabled: true
+        activation_atr: 1.5
+        trail_atr: 0.75
+      break_even:
+        enabled: true
+        trigger_atr: 1
+        offset_pips: 2
+    atr:
+      period: 14
+      timeframe: H1

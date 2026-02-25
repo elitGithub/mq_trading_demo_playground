@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme {
+  /* ——— Background layers (dark → light) ——— */
+  --color-base: #060608;
+  --color-surface-0: #0c0c11;
+  --color-surface-1: #111117;
+  --color-surface-2: #18181f;
+  --color-surface-3: #1f1f29;
+
+  /* ——— Borders ——— */
+  --color-border: #1e1e2a;
+  --color-border-hover: #2d2d3c;
+  --color-border-active: #3d3d50;
+
+  /* ——— Typography ——— */
+  --color-text: #f0f0f3;
+  --color-text-secondary: #85859e;
+  --color-text-tertiary: #5a5a70;
+
+  /* ——— Trading accents ——— */
+  --color-long: #00dc82;
+  --color-long-dim: #00dc8220;
+  --color-short: #ff4757;
+  --color-short-dim: #ff475720;
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-dim: #6366f118;
+  --color-warning: #f59e0b;
+  --color-warning-dim: #f59e0b20;
+  --color-info: #06b6d4;
+
+  /* ——— Typography ——— */
+  --font-sans: "Sora", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+/* ——— Global resets & base ——— */
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  background: var(--color-base);
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+/* ——— Scrollbar styling ——— */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-active);
+}
+
+/* ——— Selection ——— */
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* ——— Focus ring ——— */
+:focus-visible {
+  outline: 1.5px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ——— Utility: card component ——— */
+.card {
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  box-shadow:
+    0 1px 0 0 rgba(255,255,255,0.02) inset,
+    0 2px 8px -2px rgba(0,0,0,0.3);
+}
+.card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow:
+    0 1px 0 0 rgba(255,255,255,0.03) inset,
+    0 4px 16px -4px rgba(0,0,0,0.4);
+}
+
+/* ——— Utility: subtle noise overlay ——— */
+.noise-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+
+/* ——— Utility: dot grid pattern ——— */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--color-border) 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+/* ——— Utility: glow effects ——— */
+.glow-long {
+  box-shadow: 0 0 20px -4px var(--color-long-dim), inset 0 1px 0 0 var(--color-long-dim);
+}
+.glow-short {
+  box-shadow: 0 0 20px -4px var(--color-short-dim), inset 0 1px 0 0 var(--color-short-dim);
+}
+.glow-accent {
+  box-shadow: 0 0 20px -4px var(--color-accent-dim), inset 0 1px 0 0 var(--color-accent-dim);
+}
+
+/* ——— Animations ——— */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 400ms ease-out both;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+.animate-slide-in {
+  animation: slide-in-left 300ms ease-out both;
+}
+
+/* staggered delays */
+.delay-1 { animation-delay: 50ms; }
+.delay-2 { animation-delay: 100ms; }
+.delay-3 { animation-delay: 150ms; }
+.delay-4 { animation-delay: 200ms; }
+.delay-5 { animation-delay: 250ms; }
+
+/* ——— Number formatting ——— */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ——— Input styling ——— */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

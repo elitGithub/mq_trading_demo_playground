@@ -1,0 +1,101 @@
+services:
+  mt5:
+    image: gmag11/metatrader5_vnc:latest
+    container_name: ats-mt5
+    ports:
+      - "11000:3000"    # VNC web interface
+      - "11001:8001"    # RPyC Python API
+    volumes:
+      - mt5_data:/config
+      - ./mt5/start-rpyc.sh:/custom-cont-init.d/start-rpyc.sh
+    environment:
+      - CUSTOM_USER=trader
+      - PASSWORD=${MT5_VNC_PASSWORD:-trading123}
+    restart: "no"
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: ats-timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-trading}
+      - POSTGRES_USER=${POSTGRES_USER:-trader}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_db_password}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: "no"
+
+  redis:
+    image: redis:7-alpine
+    container_name: ats-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ats-backend
+    ports:
+      - "11080:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend/app:/app/app
+      - ./config:/app/config
+    depends_on:
+      - timescaledb
+      - redis
+      - mt5
+    restart: "no"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ats-frontend
+    ports:
+      - "11073:3000"
+    environment:
+      - PUBLIC_BACKEND_PORT=11080
+    depends_on:
+      - backend
+    restart: "no"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ats-prometheus
+    ports:
+      - "11090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: "no"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ats-grafana
+    ports:
+      - "11002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-changeme_grafana}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_db_password}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - timescaledb
+    restart: "no"
+
+volumes:
+  mt5_data:
+  pgdata:
+  redis_data:
+  prometheus_data:
+  grafana_data:

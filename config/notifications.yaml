@@ -1,0 +1,35 @@
+# =============================================================================
+# Notification / Alert Configuration
+# =============================================================================
+
+notifications:
+  enabled: false
+
+  # Alert channels
+  channels:
+    console:
+      enabled: true                 # Always log to console/structured log
+
+    telegram:
+      enabled: false
+      bot_token: ""
+      chat_id: ""
+
+    email:
+      enabled: false
+      smtp_host: ""
+      smtp_port: 587
+      username: ""
+      password: ""
+      to_address: ""
+
+  # Which events trigger alerts
+  events:
+    trade_opened: true
+    trade_closed: true
+    level_detected: false
+    level_hit: true
+    risk_warning: true
+    kill_switch_triggered: true
+    daily_summary: true
+    error: true

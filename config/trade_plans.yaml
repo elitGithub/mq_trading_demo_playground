@@ -1,0 +1,80 @@
+trade_plans:
+  eurusd_plan:
+    enabled: true
+    symbol: EURUSD
+    magic: 234200
+    rules:
+      entry:
+        active: true
+        conditions:
+        - field: bid
+          op: '>='
+          value: 1.18
+        - field: bid
+          op: <=
+          value: 1.1808
+        actions:
+        - type: market_buy
+          volume: 1
+        on_fill:
+          activate:
+          - rule_2
+          deactivate: []
+      rule_2:
+        active: false
+        conditions:
+        - field: bid
+          op: <=
+          value: 1.18065
+        actions:
+        - type: close_all
+        on_fill:
+          activate:
+          - entry
+          deactivate: []
+  usdcnh_plan:
+    enabled: true
+    symbol: USDCNH
+    magic: 234200
+    rules:
+      entry:
+        active: true
+        conditions:
+        - field: bid
+          op: '>='
+          value: 6.88
+        - field: bid
+          op: <=
+          value: 6.889
+        actions:
+        - type: market_buy
+          volume: 20
+        on_fill:
+          activate:
+          - rule_2
+          deactivate: []
+      rule_2:
+        active: false
+        conditions:
+        - field: bid
+          op: <=
+          value: 6.887
+        actions:
+        - type: market_sell
+          volume: 10
+        on_fill:
+          activate:
+          - rule_3
+          deactivate:
+          - entry
+      rule_3:
+        active: false
+        conditions:
+        - field: bid
+          op: <=
+          value: 6.89
+        actions:
+        - type: close_all
+        on_fill:
+          activate: []
+          deactivate: []

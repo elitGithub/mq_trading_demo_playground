@@ -1,0 +1,116 @@
+symbols:
+  defaults:
+    strategy: default
+    pip_size: 0.0001
+    min_volume: 0.01
+    volume_step: 0.01
+    spread_limit_pips: 5
+    enabled: true
+  instruments:
+    EURUSD:
+      strategy: default
+      category: forex_major
+      pip_size: 0.0001
+      spread_limit_pips: 3
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    GBPUSD:
+      strategy: default
+      category: forex_major
+      pip_size: 0.0001
+      spread_limit_pips: 4
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    USDJPY:
+      strategy: default
+      category: forex_major
+      pip_size: 0.01
+      spread_limit_pips: 3
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    GBPJPY:
+      strategy: default
+      category: forex_cross
+      pip_size: 0.01
+      spread_limit_pips: 6
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    XAUUSD:
+      strategy: default
+      category: commodity
+      pip_size: 0.01
+      spread_limit_pips: 30
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    US30:
+      strategy: default
+      category: index
+      pip_size: 1
+      spread_limit_pips: 3
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    NAS100:
+      strategy: default
+      category: index
+      pip_size: 1
+      spread_limit_pips: 3
+      min_volume: 0.01
+      volume_step: 0.01
+      enabled: true
+    MDV:
+      strategy: default
+      category: equity
+      pip_size: 0.01
+      min_volume: 1
+      volume_step: 1
+      spread_limit_pips: 10
+      enabled: true
+    BTCUSD:
+      strategy: default
+      category: crypto
+      pip_size: 0.01
+      spread_limit_pips: 50
+      min_volume: 0.01
+      enabled: false
+      volume_step: 0.01
+    $IND-MAR26:
+      strategy: default
+      category: forex_major
+      pip_size: 0.0001
+      min_volume: 0.01
+      volume_step: 0.01
+      spread_limit_pips: 5
+      enabled: true
+    PALANTIR:
+      strategy: default
+      category: forex_major
+      pip_size: 0.0001
+      min_volume: 0.01
+      volume_step: 0.01
+      spread_limit_pips: 5
+      enabled: true
+    USDCNH:
+      strategy: test
+      category: forex_major
+      pip_size: 0.0001
+      min_volume: 0.01
+      volume_step: 0.01
+      spread_limit_pips: 5
+      enabled: true
+  correlation_groups:
+    usd_pairs:
+    - EURUSD
+    - GBPUSD
+    - USDJPY
+    jpy_pairs:
+    - USDJPY
+    - GBPJPY
+    risk_on:
+    - US30
+    - NAS100
