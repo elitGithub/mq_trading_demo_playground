@@ -25,6 +25,11 @@
       icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>`,
     },
     {
+      href: '/screener',
+      label: 'Screener',
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
+    },
+    {
       href: '/trade-plans',
       label: 'Plans',
       icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>`,
@@ -47,6 +52,8 @@
   }
 
   onMount(() => {
+    // Expose backend port for direct API calls (SSE streams, etc.)
+    if (data.backendPort) (window as any).__BACKEND_PORT = data.backendPort;
     connectWs(data.backendPort);
 
     async function poll() {

@@ -1,0 +1,25 @@
+# =============================================================================
+# Screener Configuration — default filter values
+# =============================================================================
+
+# Set to true to only scan Market Watch symbols (fast, ~10 symbols).
+# Set to false to scan ALL tradeable symbols in batches (~780).
+visible_only: false
+
+# Batching — controls how full scans are paced to avoid overwhelming RPyC
+batch_size: 50        # symbols per batch
+batch_delay: 0.5      # seconds to pause between batches
+
+# Per-symbol timeout in seconds (skip symbol if MT5 takes too long)
+symbol_timeout: 10
+
+filters:
+  price:
+    min: 10
+    max: 50
+  daily_volume:
+    min: 100000
+  daily_range:
+    min: 1.0
+    max: 5.0
+    lookback_days: 3

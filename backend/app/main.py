@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from app.api.routes import account, market_data, price_levels, strategy, trading
+from app.api.routes import account, market_data, price_levels, screener, strategy, trading
 from app.api.websocket import ws_manager
 from app.config.loader import config_loader
 from app.config.watcher import ConfigWatcher
@@ -131,6 +131,7 @@ app.include_router(trading.router, prefix="/api")
 app.include_router(account.router, prefix="/api")
 app.include_router(strategy.router, prefix="/api")
 app.include_router(price_levels.router, prefix="/api")
+app.include_router(screener.router, prefix="/api")
 
 
 @app.get("/api/health")

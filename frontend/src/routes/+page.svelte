@@ -3,6 +3,7 @@
   import PositionTable from '$lib/components/PositionTable.svelte';
   import RiskMetrics from '$lib/components/RiskMetrics.svelte';
   import PriceLevelOverlay from '$lib/components/PriceLevelOverlay.svelte';
+  import ScreenerWidget from '$lib/components/ScreenerWidget.svelte';
 </script>
 
 <div class="space-y-5">
@@ -23,6 +24,9 @@
     <RiskMetrics />
     <PriceLevelOverlay />
   </div>
+
+  <!-- Screener -->
+  <ScreenerWidget />
 
   <!-- Positions -->
   <PositionTable />

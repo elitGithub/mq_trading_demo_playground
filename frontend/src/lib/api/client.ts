@@ -119,6 +119,97 @@ export async function deletePlan(planId: string) {
   return fetchJson<{ success: boolean }>(`/trading/plans/${planId}`, { method: 'DELETE' });
 }
 
+// Screener
+export async function scanScreener(filters?: {
+  price_min?: number; price_max?: number; volume_min?: number;
+  range_min?: number; range_max?: number; lookback_days?: number;
+}) {
+  const params = new URLSearchParams();
+  if (filters) {
+    for (const [k, v] of Object.entries(filters)) {
+      if (v !== undefined && v !== null) params.set(k, String(v));
+    }
+  }
+  const qs = params.toString();
+  return fetchJson<{ results: import('$lib/types').ScreenerResult[]; count: number }>(
+    `/screener/scan${qs ? `?${qs}` : ''}`
+  );
+}
+
+/**
+ * Stream scan progress via SSE. Hits the backend directly (not through SvelteKit proxy)
+ * because the proxy buffers responses and breaks SSE streaming.
+ */
+export function scanScreenerStream(
+  filters?: Record<string, number | undefined>,
+  onProgress?: (e: { batch: number; total_batches: number; scanned_so_far: number; total_symbols: number; matched_so_far: number }) => void,
+  onDone?: (e: { results: import('$lib/types').ScreenerResult[]; count: number; scanned: number; errors: number }) => void,
+  onError?: (err: string) => void,
+): () => void {
+  const params = new URLSearchParams();
+  if (filters) {
+    for (const [k, v] of Object.entries(filters)) {
+      if (v !== undefined && v !== null) params.set(k, String(v));
+    }
+  }
+  const qs = params.toString();
+
+  // Use the backend directly — same pattern as WebSocket connections
+  const backendPort = (window as any).__BACKEND_PORT || location.port;
+  const streamUrl = `${location.protocol}//${location.hostname}:${backendPort}/api/screener/scan/stream${qs ? `?${qs}` : ''}`;
+
+  let aborted = false;
+  const controller = new AbortController();
+
+  (async () => {
+    try {
+      const res = await fetch(streamUrl, { signal: controller.signal });
+      if (!res.ok || !res.body) {
+        onError?.(`Scan failed: ${res.status}`);
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        // Parse SSE lines
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || '';
+
+        for (const part of parts) {
+          if (aborted) return;
+          let eventType = 'message';
+          let data = '';
+          for (const line of part.split('\n')) {
+            if (line.startsWith('event: ')) eventType = line.slice(7);
+            else if (line.startsWith('data: ')) data = line.slice(6);
+          }
+          if (!data) continue;
+          const parsed = JSON.parse(data);
+          if (eventType === 'progress') onProgress?.(parsed);
+          else if (eventType === 'done') onDone?.(parsed);
+        }
+      }
+    } catch (e: any) {
+      if (!aborted) onError?.(e.message || 'Scan stream failed');
+    }
+  })();
+
+  return () => {
+    aborted = true;
+    controller.abort();
+  };
+}
+
+export async function getScreenerDefaults() {
+  return fetchJson<import('$lib/types').ScreenerDefaults>('/screener/defaults');
+}
+
 // Health
 export async function getHealth() {
   return fetchJson<any>('/health');

@@ -8,9 +8,11 @@ services:
     volumes:
       - mt5_data:/config
       - ./mt5/start-rpyc.sh:/custom-cont-init.d/start-rpyc.sh
+      - ./mt5/pip-constraints.txt:/etc/pip-constraints.txt:ro
     environment:
       - CUSTOM_USER=trader
       - PASSWORD=${MT5_VNC_PASSWORD:-trading123}
+      - PIP_CONSTRAINT=/etc/pip-constraints.txt
     restart: "no"
 
   timescaledb:

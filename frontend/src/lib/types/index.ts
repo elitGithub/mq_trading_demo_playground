@@ -115,6 +115,22 @@ export interface TradePlanDetail {
   order_tickets: number[];
 }
 
+export interface ScreenerResult {
+  symbol: string;
+  last_price: number;
+  avg_volume: number;
+  avg_daily_range: number;
+}
+
+export interface ScreenerDefaults {
+  price_min: number;
+  price_max: number;
+  volume_min: number;
+  range_min: number;
+  range_max: number;
+  lookback_days: number;
+}
+
 export interface TradePlanSummary {
   plan_id: string;
   enabled: boolean;
